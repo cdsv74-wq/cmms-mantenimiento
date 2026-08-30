@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Servicio de PostgreSQL
+  postgres:
+    image: postgres:14-alpine
+    container_name: cmms_db
+    environment:
+      POSTGRES_DB: cmms_db
+      POSTGRES_USER: cmms_user
+      POSTGRES_PASSWORD: cmms_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - cmms_network
+
+  # Servicio de Flask
+  flask:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cmms_app
+    environment:
+      FLASK_ENV: development
+      FLASK_APP: backend/app.py
+      DATABASE_URL: postgresql://cmms_user:cmms_password@postgres:5432/cmms_db
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend:/app/backend
+      - ./frontend:/app/frontend
+    networks:
+      - cmms_network
+    command: python backend/app.py
+
+volumes:
+  postgres_data:
+
+networks:
+  cmms_network:
+    driver: bridge
