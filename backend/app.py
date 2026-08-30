@@ -118,7 +118,6 @@ def error_servidor(error):
 
 # ==================== INICIALIZACIÓN ====================
 
-@app.with_appcontext
 def crear_tablas():
     """Crear tablas si no existen"""
     db.create_all()
