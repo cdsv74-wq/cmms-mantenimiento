@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMS - Sistema de Mantenimiento</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <h2>🔧 CMMS</h2>
+                <p>Sistema de Mantenimiento</p>
+            </div>
+            <ul class="menu">
+                <li><a href="#dashboard" onclick="mostrar('dashboard')" class="active">📊 Dashboard</a></li>
+                <li><a href="#activos" onclick="mostrar('activos')">🏭 Activos</a></li>
+                <li><a href="#ordenes" onclick="mostrar('ordenes')">📋 Órdenes de Trabajo</a></li>
+                <li><a href="#historial" onclick="mostrar('historial')">📝 Historial</a></li>
+                <li><a href="#usuarios" onclick="mostrar('usuarios')">👥 Usuarios</a></li>
+            </ul>
+        </nav>
+
+        <!-- Contenido Principal -->
+        <main class="content">
+            <header class="header">
+                <h1>Bienvenido al CMMS</h1>
+                <div class="user-info">
+                    <span>Usuario: Admin</span>
+                    <button class="logout-btn">Salir</button>
+                </div>
+            </header>
+
+            <!-- Dashboard -->
+            <section id="dashboard" class="section active">
+                <h2>Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Activos</h3>
+                        <p class="stat-number" id="total-activos">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Órdenes Pendientes</h3>
+                        <p class="stat-number" id="ordenes-pendientes">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Órdenes Completadas</h3>
+                        <p class="stat-number" id="ordenes-completadas">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Activos Inactivos</h3>
+                        <p class="stat-number" id="activos-inactivos">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Activos -->
+            <section id="activos" class="section">
+                <h2>Gestión de Activos</h2>
+                <button class="btn-primary" onclick="mostrarFormularioActivo()">➕ Nuevo Activo</button>
+                
+                <div id="formulario-activo" class="form-container" style="display: none;">
+                    <h3>Crear Activo</h3>
+                    <form onsubmit="guardarActivo(event)">
+                        <input type="text" placeholder="Nombre del activo" id="activo-nombre" required>
+                        <input type="text" placeholder="Código único" id="activo-codigo" required>
+                        <textarea placeholder="Descripción" id="activo-descripcion"></textarea>
+                        <input type="text" placeholder="Tipo (Bomba, Motor, etc.)" id="activo-tipo">
+                        <input type="text" placeholder="Ubicación" id="activo-ubicacion">
+                        <button type="submit" class="btn-primary">Guardar</button>
+                        <button type="button" class="btn-secondary" onclick="ocultarFormularioActivo()">Cancelar</button>
+                    </form>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Ubicación</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-activos">
+                        <!-- Se llena dinámicamente -->
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Órdenes de Trabajo -->
+            <section id="ordenes" class="section">
+                <h2>Órdenes de Trabajo</h2>
+                <button class="btn-primary" onclick="mostrarFormularioOrden()">➕ Nueva Orden</button>
+                
+                <div id="formulario-orden" class="form-container" style="display: none;">
+                    <h3>Crear Orden de Trabajo</h3>
+                    <form onsubmit="guardarOrden(event)">
+                        <select id="orden-activo" required>
+                            <option value="">Seleccionar Activo</option>
+                        </select>
+                        <select id="orden-tipo" required>
+                            <option value="">Tipo de Mantenimiento</option>
+                            <option value="preventivo">Preventivo</option>
+                            <option value="correctivo">Correctivo</option>
+                            <option value="predictivo">Predictivo</option>
+                        </select>
+                        <textarea placeholder="Descripción del trabajo" id="orden-descripcion" required></textarea>
+                        <select id="orden-prioridad">
+                            <option value="normal">Prioridad Normal</option>
+                            <option value="alta">Prioridad Alta</option>
+                            <option value="critica">Crítica</option>
+                        </select>
+                        <button type="submit" class="btn-primary">Crear Orden</button>
+                        <button type="button" class="btn-secondary" onclick="ocultarFormularioOrden()">Cancelar</button>
+                    </form>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Activo</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Prioridad</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-ordenes">
+                        <!-- Se llena dinámicamente -->
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Historial -->
+            <section id="historial" class="section">
+                <h2>Historial de Mantenimiento</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Activo</th>
+                            <th>Tipo</th>
+                            <th>Fecha</th>
+                            <th>Costo</th>
+                            <th>Notas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-historial">
+                        <!-- Se llena dinámicamente -->
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Usuarios -->
+            <section id="usuarios" class="section">
+                <h2>Gestión de Usuarios</h2>
+                <button class="btn-primary">➕ Nuevo Usuario</button>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Admin User</td>
+                            <td>admin@cmms.local</td>
+                            <td>Administrador</td>
+                            <td><span class="badge-active">Activo</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
